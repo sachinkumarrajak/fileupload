@@ -1,6 +1,7 @@
 # fileupload
 
-
+ string apiUrl = "https://localhost:7039"; // Replace with your API URL
+                string downloadEndpoint = $"{apiUrl}/Admin/Category/DownloadFiless?version={version}";
         [AllowAnonymous]
         public IActionResult DownloadFiless(string version)
         {
