@@ -1,3 +1,36 @@
+ private void DownloadFile(string version)
+        {
+            try
+            {
+                string apiUrl = "https://localhost:7039"; // Replace with your API URL
+                string downloadEndpoint = $"{apiUrl}/Admin/Category/DownloadFiless?version={version}";
+
+                using (WebClient webClient = new WebClient())
+                {
+                    // Download the file content as a byte array
+                    byte[] fileContent = webClient.DownloadData(downloadEndpoint);
+
+                    // Save the file to a specified location
+                    string filePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "filename");
+                    // Replace with the path where you want to save the file
+                    File.WriteAllBytes(filePath, fileContent);
+
+                    // File downloaded successfully
+                    MessageBox.Show("File downloaded successfully.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            DownloadFile("1.009");
+        }
+
 [Remote(action: "IsCityInUse", controller: "Account")]
  [AcceptVerbs("Get", "Post")]
         [AllowAnonymous]
