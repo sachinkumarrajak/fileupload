@@ -1,3 +1,19 @@
+[Remote(action: "IsCityInUse", controller: "Account")]
+ [AcceptVerbs("Get", "Post")]
+        [AllowAnonymous]
+        public async Task<IActionResult> IsCityInUse(string city)
+        {
+            var userByCity = await userManager.Users.FirstOrDefaultAsync(u => u.City == city);
+
+            if (userByCity == null)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json($"City {city} is already in use.");
+            }
+        }
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="*" Name="SetupProject4" Language="1033" Version="1.0.0.0" Manufacturer="YourManufacturer" UpgradeCode="a4ff7dbc-867d-41c8-95c2-4d1622fda3dc">
