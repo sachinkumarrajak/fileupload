@@ -1,3 +1,16 @@
+ Roles:
+                @foreach (var role in await UserManager.GetRolesAsync(user))
+                {
+                    <span class="badge badge-info">@role</span>
+                }
+ 
+ @model IEnumerable<ApplicationUser>
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IAuthorizationService authorizationService;
+@inject UserManager<ApplicationUser> UserManager
+ 
  private void DownloadFile(string version)
         {
             try
