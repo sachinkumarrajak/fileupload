@@ -1,0 +1,61 @@
+[HttpPost]
+        public IActionResult DeleteSchedule(int scheduleId)
+        {
+            try
+            {
+                // Retrieve the schedule to be deleted from the database
+                var schedule = _unitOfWork.Schedule.GetScheduleById(scheduleId);
+
+                if (schedule == null)
+                {
+                    return NotFound(); // Return 404 if schedule not found
+                }
+
+                // Perform the deletion
+                _unitOfWork.Schedule.RemoveSchedule(schedule);
+                _unitOfWork.Save(); // Save changes to the database
+
+                return Ok("Schedule deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
+
+  
+    function deleteSchedule(scheduleId) {
+        if (confirm('Are you sure you want to delete this schedule?')) {
+            $.ajax({
+                type: 'POST',
+                url: '/Admin/popc/DeleteSchedule',
+                data: { scheduleId: scheduleId },
+                success: function (response) {
+                    console.log('Schedule deleted successfully:', response);
+                    location.reload();  // Reload the page after successful delete
+                },
+                error: function (error) {
+                    console.error('Error deleting schedule:', error);
+                }
+            });
+        }
+    }
+ <td>
+                    <button class="btn btn-danger" onclick="deleteSchedule('@schedule.Id')">Delete</button>
+                </td>
+
+
+  public Schedule GetScheduleById(int scheduleId)
+        {
+            return _db.Schedules.FirstOrDefault(s => s.Id == scheduleId);
+        }
+
+        public void RemoveSchedule(Schedule schedule)
+        {
+            _db.Schedules.Remove(schedule);
+        }
+  Schedule GetScheduleById(int scheduleId);
+        void RemoveSchedule(Schedule schedule);
