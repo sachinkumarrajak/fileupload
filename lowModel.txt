@@ -1,0 +1,72 @@
+@model LoginViewModel
+
+@{
+    ViewBag.Title = "User Login";
+}
+
+<h1>User Login</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <form method="post">
+
+            <div class="form-group">
+                <label asp-for="EmailOrCity">Email or City</label>
+                <input asp-for="EmailOrCity" class="form-control" placeholder="Enter your email or city" />
+                @Html.ValidationMessageFor(model => model.EmailOrCity, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" />
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox">
+                    <label asp-for="RememberMe">
+                        <input asp-for="RememberMe" />
+                        @Html.DisplayNameFor(m => m.RememberMe)
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        @if (!string.IsNullOrEmpty(ViewBag.InvalidLoginMessage))
+        {
+            <div class="text-danger">@ViewBag.InvalidLoginMessage</div>
+        }
+    </div>
+</div>
+   public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (string.IsNullOrWhiteSpace(model.EmailOrCity))
+                {
+                    ModelState.AddModelError("EmailOrCity", "The Email or City field is required.");
+                    return View(model);
+                }
+
+                var user = await userManager.FindByEmailAsync(model.EmailOrCity)
+                           ?? await userManager.Users.FirstOrDefaultAsync(u => u.City == model.EmailOrCity);
+
+                if (user == null)
+                {
+                    ViewBag.InvalidLoginMessage = "Invalid Login Attempt";
+                    return View(model);
+                }
+
+                var result = await signInManager.PasswordSignInAsync(
+                    user, model.Password, model.RememberMe, false);
+
+                if (result.Succeeded)
+                {
+                    // Successful login
+                    return RedirectToAction("ListUsers", "Administration", new { area = "Admin" });
+                }
+            }
+
+            return View(model);
+        }
